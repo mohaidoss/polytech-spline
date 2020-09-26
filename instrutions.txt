@@ -1,0 +1,14 @@
+S_i(x) = a_i*(x-x_i)**3 + b_i*(x-x_i)**2 + c_i*(x-x_i) + d_i
+
+Condition d'interpolation : 
+    S_i(x_i) = y_i
+    S_n-1(x_n) = y_n
+
+Matching Condition :
+    S_i(x_i+1) = S_i+1(x_i+1)   //Match splines adjacentes
+    S_i'(x_i+1) = S_i+1'(x_i+1) //Match des dérivées adjacentes
+    S_i"(x_i+1) = S_i+1"(x_i+1) //Match des dérivées secondes adjacentes
+
+**Spline cubique naturelle : S_0"(x_0) = 0 ; S"_n-1(x_n) = 0
+
+
