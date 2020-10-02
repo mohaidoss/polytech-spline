@@ -1,34 +1,40 @@
 import numpy as np
-import scipy as scp
+from scipy import linalg
 import matplotlib.pyplot as plt
-from gekko import GEKKO
+from math import * 
 
-a = 0
-b = 5
-n = 5
+x = np.linspace(1,6,6)
+def f(x) :
+    return (cos(x))**2
 
-points = np.empty((n + 1,2)) #Ensemble de points
-xn = np.linspace(a,b,n+1)  #subdivision des abscisses de a à b
-yn = np.array([0.1,0.2,0.3,0.5,1.0,0.9])
-points[:,0] = xn
+def fp(x):
+    return -2*cos(x)*sin(x)
 
-m = GEKKO()
-m.x = m.Param(value = np.linspace(-1,6))
-m.y = m.Var()
-m.options.IMODE=2
-m.cspline(m.x,m.y,xn,yn)
-m.solve(disp=False)
-#help(m.cspline)
+f_x = np.vectorize(f)
+fp_x = np.vectorize(fp)
 
-p = GEKKO()
-p.x = p.Var(value=1,lb=0,ub=5)
-p.y = p.Var()
-p.cspline(p.x,p.y,xn,yn)
-p.Obj(-p.y)
-p.solve(disp=False)
+y = f_x(x)
+yp = fp_x(x)
 
-plt.plot(xn,yn,'bo',label='data')
-plt.plot(m.x.value,m.y.value,'r--',label='cubic spline')
-plt.plot(p.x.value,p.y.value,'ko',label='maximum')
-plt.legend(loc='best')
-plt.show()
+
+A = np.matrix([[x[0]**3,x[0]**2,x[0],1],[x[1]**3,x[1]**2,x[1],1],[3*x[0]**2,2*x[0],1,0],[3*x[1]**2,2*x[1],1,0]])
+Y = np.array([y[0],y[1],yp[0],yp[1]])
+Y = Y.reshape(4,1)
+
+
+Q,R = np.linalg.qr(A)
+
+B = np.matmul(Q.transpose(),Y)
+
+X = linalg.solve_triangular(R,B,0)
+
+
+
+print(x)
+print(Y)
+
+print("______________________________________")
+print(Q)
+print(R)
+print("______________________________")
+print(B)

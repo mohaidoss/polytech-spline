@@ -1,26 +1,35 @@
 import numpy as np
 import scipy as scp
 import matplotlib.pyplot as plt
+from math import *
 from gekko import GEKKO
 
+def f(x):
+    return (cos(x))**2
 
-data = np.array([[0,0.1],[1,0.4],[2,0.2],[3,-0.2],[4,0.1],[5,0.5],[6,0.6]])  #Ensemble de points
+f_x = np.vectorize(f)
 
-xn = data[:,0]  #abscisses des points
-a = xn[0]
-b = xn[-1]
-yn = data[:,1]  #ordonnées des points 
+X = np.linspace(0,6,7)
+Y = f_x(X)
+
+
+print(Y)
+
+
+a = X[0]
+b = X[-1]
 
 m = GEKKO()
 m.x = m.Param(value = np.linspace(a,b))
 m.y = m.Var()
 m.options.IMODE=2
-m.cspline(m.x,m.y,xn,yn)
+m.cspline(m.x,m.y,X,Y)
 m.solve(disp=False)
 #help(m.cspline)
 
 
-plt.plot(xn,yn,'bo',label='data')
+plt.plot(X,Y,'bo',label='data')
 plt.plot(m.x.value,m.y.value,'r--',label='cubic spline')
 plt.legend(loc='best')
 plt.show()
+
