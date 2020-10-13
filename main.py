@@ -14,9 +14,10 @@ def fp(x):
 f_x = np.vectorize(f)
 fp_x = np.vectorize(fp)
 
-#Ensemble de points, et dérivé
+#Ensemble de points
 x = np.linspace(1,6,6)
 y = f_x(x)
+#La dérivé à chaque point
 yp = fp_x(x)
 
 #Système d'équations en forme matricielle A*X = Y
